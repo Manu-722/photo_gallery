@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Photo Gallery</h1>
+
+<div class="mb-4">
+    <span class="font-semibold">Filter by tag:</span>
+    {% for tag in tags %}
+        <a href="?tag={{ tag.name }}" class="text-blue-600 hover:underline ml-2">{{ tag.name }}</a>
+    {% endfor %}
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    {% for photo in photos %}
+        <div class="bg-white shadow rounded overflow-hidden">
+            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h2 class="text-lg font-semibold">{{ photo.title }}</h2>
+                <p class="text-sm text-gray-600">{{ photo.description|truncatewords:15 }}</p>
+                <a href="{% url 'photo_gallery:photo_detail' photo.pk %}" class="text-blue-500 mt-2 inline-block">View Details</a>
+            </div>
+        </div>
+    {% empty %}
+        <p>No photos available.</p>
+    {% endfor %}
+</div>
+{% endblock %}
