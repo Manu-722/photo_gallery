@@ -34,3 +34,44 @@ def edit_profile(request):
         form = ProfileForm(instance=profile)
     return render(request, 'edit_profile.html', {'form': form})
 
+@login_required
+def upload_photo(request):
+    if request.method == 'POST':
+        form = PhotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            photo = form.save(commit=False)
+            photo.uploaded_by = request.user
+            photo.save()
+            form.save_m2m()
+            return redirect('photo_gallery:home')
+    else:
+        form = PhotoForm()
+    return render(request, 'upload_photo.html', {'form': form})
+@login_required
+def like_photo(request, pk):
+    photo = get_object_or_404(Photo, pk=pk)
+    if request.user in photo.likes.all():
+        photo.likes.remove(request.user)
+    else:
+        photo.likes.add(request.user)
+    return redirect('photo_gallery:photo_detail', pk=pk)
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('photo_gallery:home')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'register.html', {'form': form})
+class CustomPasswordChangeView(PasswordChangeView):
+    form_class = PasswordChangeForm
+    success_url = reverse_lazy('photo_gallery:profile')
+    template_name = 'change_password.html'
+
+
+
+
+
+
