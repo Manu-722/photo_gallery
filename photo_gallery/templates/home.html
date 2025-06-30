@@ -6,8 +6,20 @@
 <div class="mb-4">
     <span class="font-semibold">Filter by tag:</span>
     {% for tag in tags %}
-        <a href="?tag={{ tag.name }}" class="text-blue-600 hover:underline ml-2">{{ tag.name }}</a>
+        <a href="?tag={{ tag.name }}"
+           class="ml-2 px-2 py-1 rounded 
+           {% if request.GET.tag == tag.name %}
+               bg-blue-600 text-white
+           {% else %}
+               text-blue-600 hover:underline
+           {% endif %}">
+            {{ tag.name }}
+        </a>
     {% endfor %}
+
+    {% if request.GET.tag %}
+        <a href="{% url 'photo_gallery:home' %}" class="ml-4 text-sm text-gray-500 hover:underline">Clear filter</a>
+    {% endif %}
 </div>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

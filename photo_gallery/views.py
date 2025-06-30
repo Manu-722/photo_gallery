@@ -6,6 +6,7 @@ from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
 from .models import Photo, Tag, UserProfile
 from .forms import PhotoForm, ProfileForm, CustomUserCreationForm
+from django.db.models import Count
 
 def home(request):
     tag = request.GET.get('tag')
@@ -70,8 +71,17 @@ class CustomPasswordChangeView(PasswordChangeView):
     success_url = reverse_lazy('photo_gallery:profile')
     template_name = 'change_password.html'
 
+def most_liked_photos(request):
+    photos = Photo.objects.annotate(like_count=Count('likes')).order_by('-like_count', '-created_at')
+    return render(request, 'most_liked.html', {'photos': photos})
 
-
-
+@login_required
+def like_photo(request, pk):
+    photo = get_object_or_404(Photo, pk=pk)
+    if request.user in photo.likes.all():
+        photo.likes.remove(request.user)
+    else:
+        photo.likes.add(request.user)
+    return redirect('photo_gallery:photo_detail', pk=pk)
 
 
