@@ -5,7 +5,7 @@
 
 <div class="mb-4">
     <span class="font-semibold">Filter by tag:</span>
-    {% for tag in tags %}
+    {% comment %} {% for tag in tags %} {% endcomment %}
         <a href="?tag={{ tag.name }}"
            class="ml-2 px-2 py-1 rounded 
            {% if request.GET.tag == tag.name %}
