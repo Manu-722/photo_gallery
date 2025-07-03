@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from .views import email_login_view
+
 
 app_name = 'photo_gallery'
 
@@ -13,4 +15,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('change-password/', views.CustomPasswordChangeView.as_view(), name='change_password'),
     path('most-liked/', views.most_liked_photos, name='most_liked'),
+    path('login/', email_login_view, name='login'),
+
 ]
